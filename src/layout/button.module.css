@@ -1,0 +1,13 @@
+.btn {
+  border: 1px solid black;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.primary {
+  background-color: #238636;
+}
+
+.danger {
+  background-color: red;
+}

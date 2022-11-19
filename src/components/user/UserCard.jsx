@@ -1,4 +1,5 @@
 import styles from "./user.module.css";
+import { Button, ButtonGroup } from "../../layout";
 
 const UserCard = ({ item, deleteUser }) => {
   const deleteHandler = () => {
@@ -11,11 +12,10 @@ const UserCard = ({ item, deleteUser }) => {
         <li>phone:{item.phone}</li>
         <li>city:{item.city}</li>
       </ul>
-      <div className="btnGroup">
-        <div className="btn" onClick={deleteHandler}>
-          Delete
-        </div>
-      </div>
+      <ButtonGroup>
+        <Button action={deleteHandler}>Delete</Button>
+        <Button color="danger">Edit</Button>
+      </ButtonGroup>
     </div>
   );
 };

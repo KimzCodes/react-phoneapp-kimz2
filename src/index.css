@@ -9,10 +9,5 @@
   position: absolute;
   top: 50%;
   right: 10px;
-}
-
-.btn {
-  border: 1px solid black;
-  padding: 2px;
-  cursor: pointer;
+  display: flex;
 }
