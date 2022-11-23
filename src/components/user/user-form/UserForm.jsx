@@ -20,7 +20,6 @@ const UserForm = ({ insertUser }) => {
   return (
     <form onSubmit={formHandler}>
       <Input
-        type="email"
         name="name"
         placeholder="name"
         value={input.name}

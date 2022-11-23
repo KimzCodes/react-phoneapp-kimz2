@@ -17,6 +17,7 @@ const App = () => {
   const insertUser = (data) => {
     data.id = Math.floor(Math.random() * 100);
     setPerson((prev) => [...prev, data]);
+    setToggleLightBox(false);
   };
 
   return (
