@@ -3,12 +3,9 @@ import Container from "../container/Container";
 
 const LightBox = ({ children, closeHandler }) => {
   return (
-    <>
-      <div className={styles.lightbox} onClick={closeHandler}></div>
-      <Container
+    <div className={styles.lightbox} onClick={closeHandler}>
+      <div
         style={{
-          backgroundColor: "white",
-          width: "500px",
           zIndex: 10,
           position: "absolute",
           top: 0,
@@ -16,9 +13,16 @@ const LightBox = ({ children, closeHandler }) => {
           transform: "translateX(-50%)",
         }}
       >
-        {children}
-      </Container>
-    </>
+        <Container
+          style={{
+            backgroundColor: "white",
+            width: "500px",
+          }}
+        >
+          {children}
+        </Container>
+      </div>
+    </div>
   );
 };
 
