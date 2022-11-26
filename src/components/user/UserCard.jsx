@@ -1,7 +1,7 @@
 import styles from "./user.module.css";
 import { Button } from "../index";
 
-const UserCard = ({ item, deleteUser }) => {
+const UserCard = ({ item, deleteUser, getUserData }) => {
   return (
     <div className={styles.userCard}>
       <ul>
@@ -10,7 +10,7 @@ const UserCard = ({ item, deleteUser }) => {
         <li>city:{item.city}</li>
       </ul>
       <div className="btnGroup">
-        <Button>Edit</Button>
+        <Button onClick={() => getUserData(item)}>Edit</Button>
         <Button onClick={() => deleteUser(item.id)} color="danger">
           Delete
         </Button>

@@ -1,10 +1,10 @@
 import styles from "./lightbox.module.css";
 import Container from "../container/Container";
 
-const LightBox = ({ children, closeHandler }) => {
+const LightBox = ({ children, close }) => {
   return (
     <>
-      <div className={styles.lightbox} onClick={closeHandler}></div>
+      <div className={styles.lightbox} onClick={close}></div>
       <Container
         style={{
           backgroundColor: "white",
