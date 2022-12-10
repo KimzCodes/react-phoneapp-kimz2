@@ -7,11 +7,6 @@ const UserForm = ({ saveUser, selectedUser }) => {
   useEffect(() => {
     if (selectedUser) {
       setInput((prev) => ({ ...prev, ...selectedUser }));
-    } else {
-      setInput((prev) => ({
-        ...prev,
-        id: Math.floor(Math.random() * 100),
-      }));
     }
   }, [selectedUser]);
 

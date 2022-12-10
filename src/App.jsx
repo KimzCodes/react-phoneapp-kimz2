@@ -1,41 +1,93 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Container, UserForm, LightBox, Button, Input } from "./components";
 import UserList from "./components/user/UserList";
 
 const App = () => {
   const [search, setSearch] = useState("");
-  const [persons, setPerson] = useState([
-    { id: 1, name: "John do", phone: "01010111", city: "taxes" },
-    { id: 2, name: "kareem nour", phone: "01010111", city: "giza" },
-  ]);
-
+  const [persons, setPerson] = useState([]);
   const [toggleLightBox, setToggleLightBox] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
   const selectedUser = useRef("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("http://localhost:5000/users");
+        const data = await res.json();
+        setIsLoading(false);
+        setPerson((prev) => [...prev, ...data]);
+      } catch (error) {
+        setIsLoading(false);
+        alert("error from server");
+      }
+    })();
+  }, []);
 
   const lightBoxHandler = (toggle) => {
     setToggleLightBox(toggle);
     if (!toggle) selectedUser.current = "";
   };
 
-  const deleteUser = (id) => {
-    setPerson((prev) => prev.filter((el) => el.id !== id));
+  const deleteUser = async (id) => {
+    setIsLoading(true);
+    try {
+      await fetch(`http://localhost:5000/users/${id}`, {
+        method: "DELETE",
+      });
+      setPerson((prev) => prev.filter((el) => el.id !== id));
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      alert("can not delete error from server: ", error.message);
+    }
   };
 
-  const saveUser = (data) => {
-    const userExist = persons.find((el) => el.id === data.id);
+  const saveUser = async (data) => {
+    const userExist =
+      persons.length > 0 && persons.find((el) => el.id === data.id);
+    setIsLoading(true);
+    //edit user
     if (userExist) {
-      setPerson(
-        persons.map((el) => {
-          if (el.id === data.id) {
-            return { ...data };
-          } else {
-            return el;
-          }
-        })
-      );
+      try {
+        await fetch(`http://localhost:5000/users/${data.id}`, {
+          method: "PATCH",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        });
+        setPerson(
+          persons.map((el) => {
+            if (el.id === data.id) {
+              return { ...data };
+            } else {
+              return el;
+            }
+          })
+        );
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        alert("can not delete error from server: ", error.message);
+      }
+
+      //insert user
     } else {
-      setPerson((prev) => [...prev, data]);
+      try {
+        const res = await fetch("http://localhost:5000/users/", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        });
+        const resData = await res.json();
+        setPerson((prev) => [...prev, resData]);
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        alert("can not delete error from server: ", error.message);
+      }
     }
 
     lightBoxHandler(false);
@@ -46,14 +98,13 @@ const App = () => {
     lightBoxHandler(true);
   };
 
-  const returnPersons = () => {
-    if (search.length > 0) {
-      return persons.filter(
-        (el) => el.name.includes(search) || el.city.includes(search)
-      );
-    }
-    return persons;
-  };
+  const returnPersons =
+    search.length > 0
+      ? persons.length > 0 &&
+        persons.filter(
+          (el) => el.name.includes(search) || el.city.includes(search)
+        )
+      : persons;
 
   return (
     <Container>
@@ -69,12 +120,17 @@ const App = () => {
           <UserForm saveUser={saveUser} selectedUser={selectedUser.current} />
         </LightBox>
       ) : null}
-
-      <UserList
-        persons={returnPersons()}
-        deleteUser={deleteUser}
-        getUserData={getUserDataHandler}
-      />
+      {isLoading ? (
+        <div>
+          <p>loading please wait...</p>
+        </div>
+      ) : (
+        <UserList
+          persons={returnPersons}
+          deleteUser={deleteUser}
+          getUserData={getUserDataHandler}
+        />
+      )}
     </Container>
   );
 };
